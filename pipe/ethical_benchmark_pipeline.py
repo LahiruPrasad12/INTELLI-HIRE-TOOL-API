@@ -114,7 +114,10 @@ class EthicalBenchMarkDetector:
             start = time.time()
             processed_image = self.process_frame(image)
             # cv2.imshow('Ethical Benchmark', processed_image)
-            _, buffer = cv2.imencode('.jpg', processed_image)
+            desired_width = 1135  # Choose your desired width
+            desired_height = 601  # Choose your desired height
+            resized_frame = cv2.resize(processed_image, (desired_width, desired_height))
+            _, buffer = cv2.imencode('.jpg', resized_frame)
             frame_bytes = buffer.tobytes()
             # frame_bytes = processed_image.tobytes()
             yield (b'--frame\r\n'
