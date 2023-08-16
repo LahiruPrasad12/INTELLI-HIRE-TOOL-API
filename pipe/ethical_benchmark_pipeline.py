@@ -106,12 +106,18 @@ class EthicalBenchMarkDetector:
                 self.plot_boxes(results, image, text)
         return image
 
-    def run(self, cap):
+    def run(self):
         # Runs the head pose detection on the video capture
+        cap = cv2.VideoCapture(0)
         while cap.isOpened():
             success, image = cap.read()
             start = time.time()
             processed_image = self.process_frame(image)
-            cv2.imshow('Ethical Benchmark', processed_image)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            # cv2.imshow('Ethical Benchmark', processed_image)
+            _, buffer = cv2.imencode('.jpg', processed_image)
+            frame_bytes = buffer.tobytes()
+            # frame_bytes = processed_image.tobytes()
+            yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
